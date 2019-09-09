@@ -37,10 +37,10 @@ class EmployeeList extends Component {
         const { error, isLoaded, items } = this.state;
         const cols = [
             { field: 'id', name: 'Id' },
-            { field: 'fullname', name: 'Full Name'},
-            { field: 'contactPreference', name: 'Contact Preference'},
-            { field: 'email', name: 'Email'},
-            { field: 'phone', name: 'Phone', align: 'right'},
+            { field: 'fullname', name: 'Full Name' },
+            { field: 'contactPreference', name: 'Contact Preference' },
+            { field: 'email', name: 'Email' },
+            { field: 'phone', name: 'Phone', align: 'right' },
         ];
         if (error) {
             return <div>Error: {error.message}</div>;
@@ -74,7 +74,7 @@ class EmployeeList extends Component {
                 //         </tbody>
                 //     </Table>
                 // </div>
-                <div className="mt-5 mb-5"><CustomMuiTable columns={cols} rows={items} ></CustomMuiTable></div>
+                <div className="mt-5 mb-5"><CustomMuiTable columns={cols} rows={items} scrollable={true}></CustomMuiTable></div>
             );
         }
     }

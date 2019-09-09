@@ -12,6 +12,9 @@ import PropTypes from 'prop-types';
 const useStyles = makeStyles({
     root: {
         width: '100%',
+        boxShadow: 'none',
+        border: '1px solid black',
+        borderRadius: 'unset'
     },
     tableWrapper: {
         maxHeight: 400,
@@ -21,16 +24,22 @@ const useStyles = makeStyles({
 
 CustomMuiTable.propTypes = {
     columns: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        field: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        field: PropTypes.string,
         align: PropTypes.string,
         minWidth: PropTypes.string,
         maxWidth: PropTypes.string,
         format: PropTypes.func
-    })).isRequired,
+    })),
     rows: PropTypes.array.isRequired,
+    displayHeader: PropTypes.bool,
+    scrollable: PropTypes.bool,
     hover: PropTypes.bool,
     pagination: PropTypes.bool
+};
+
+CustomMuiTable.defaultProps = {
+    displayHeader: true
 };
 
 export default function CustomMuiTable(props) {
@@ -51,9 +60,10 @@ export default function CustomMuiTable(props) {
 
     return (
         <Paper className={classes.root}>
-            <div className={classes.tableWrapper}>
+            <div className={props.scrollable ? classes.tableWrapper : ''}>
                 <Table stickyHeader>
-                    <TableHead>
+                    {props.displayHeader ? 
+                    (<TableHead>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
@@ -65,7 +75,7 @@ export default function CustomMuiTable(props) {
                                 </TableCell>
                             ))}
                         </TableRow>
-                    </TableHead>
+                    </TableHead>) : null}
                     <TableBody>
                         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
                             return (
