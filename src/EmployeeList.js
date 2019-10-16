@@ -74,7 +74,7 @@ class EmployeeList extends Component {
                 //         </tbody>
                 //     </Table>
                 // </div>
-                <div className="mt-5 mb-5"><CustomMuiTable columns={cols} rows={items} scrollable={true}></CustomMuiTable></div>
+                <div className="mt-5 mb-5"><CustomMuiTable columns={cols} rows={items} displayHeader={true} scrollable={true} pagination={true}></CustomMuiTable></div>
             );
         }
     }

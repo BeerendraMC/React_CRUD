@@ -13,13 +13,46 @@ const useStyles = makeStyles({
     root: {
         width: '100%',
         boxShadow: 'none',
-        border: '1px solid black',
-        borderRadius: 'unset'
     },
-    tableWrapper: {
-        maxHeight: 400,
+    tableBodyScroll: {
+        display: 'block',
+        maxHeight: 350,
         overflow: 'auto',
+        border: '2px solid lightgrey',
+        borderRadius: '2px',
     },
+    tableBody: {
+        display: 'block',
+        border: '2px solid lightgrey',
+        borderRadius: '2px',
+    },
+    tableCellHead: {
+        fontSize: '0.75rem',
+        backgroundColor: '#fff',
+        textTransform: 'uppercase',
+        borderBottom: 'hidden'
+    },
+    tableHeadScroll: {
+        display: 'table',
+        width: '99%',
+        tableLayout: 'fixed',
+    },
+    tableHead: {
+        display: 'table',
+        width: '100%',
+        tableLayout: 'fixed',
+    },
+    tableRow: {
+        display: 'table',
+        width: '100%',
+        tableLayout: 'fixed',
+    },
+    tablePagination: {
+        borderBottom: '2px solid lightgrey',
+        borderRight: '2px solid lightgrey',
+        borderLeft: '2px solid lightgrey',
+        fontSize: '0.75rem'
+    }
 });
 
 CustomMuiTable.propTypes = {
@@ -43,7 +76,7 @@ CustomMuiTable.defaultProps = {
 };
 
 export default function CustomMuiTable(props) {
-    const { rows, columns, hover, pagination } = props;
+    const { rows, displayHeader, columns, hover, scrollable, pagination } = props;
     const classes = useStyles();
     const numOfRecords = pagination ? 5 : rows.length;
     const [page, setPage] = React.useState(0);
@@ -60,13 +93,13 @@ export default function CustomMuiTable(props) {
 
     return (
         <Paper className={classes.root}>
-            <div className={props.scrollable ? classes.tableWrapper : ''}>
-                <Table stickyHeader>
-                    {props.displayHeader ? 
-                    (<TableHead>
+            <Table stickyHeader>
+                {displayHeader ?
+                    (<TableHead className={scrollable ? classes.tableHeadScroll : classes.tableHead}>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
+                                    className={classes.tableCellHead}
                                     key={column.field}
                                     align={column.align}
                                     style={{ minWidth: column.minWidth, maxWidth: column.maxWidth }}
@@ -76,26 +109,26 @@ export default function CustomMuiTable(props) {
                             ))}
                         </TableRow>
                     </TableHead>) : null}
-                    <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
-                            return (
-                                <TableRow hover={hover} role="checkbox" tabIndex={-1} key={i}>
-                                    {columns.map(column => {
-                                        const value = row[column.field];
-                                        return (
-                                            <TableCell key={column.field} align={column.align}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                            </TableCell>
-                                        );
-                                    })}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </div>
+                <TableBody className={scrollable ? classes.tableBodyScroll : classes.tableBody}>
+                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
+                        return (
+                            <TableRow className={classes.tableRow} hover={hover} role="checkbox" tabIndex={-1} key={i}>
+                                {columns.map(column => {
+                                    const value = row[column.field];
+                                    return (
+                                        <TableCell key={column.field} align={column.align}>
+                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
             {pagination ? (
                 <TablePagination
+                    className={classes.tablePagination}
                     rowsPerPageOptions={[5, 10, 15, 20]}
                     component="div"
                     count={rows.length}
