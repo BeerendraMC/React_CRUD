@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Table } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 import CustomMuiTable from './shared/MuiTable'
 
 class EmployeeList extends Component {
@@ -9,11 +9,18 @@ class EmployeeList extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            items: []
+            editClick: { isClicked: false, id: null },
+            items: [],
         };
+        this.deleteClickHandler = this.deleteClickHandler.bind(this);
+        this.editClickHandler = this.editClickHandler.bind(this);
     }
 
     componentDidMount() {
+        this.getEmployees();
+    }
+
+    getEmployees() {
         axios.get("http://localhost:8888/employees")
             .then(
                 (result) => {
@@ -33,48 +40,45 @@ class EmployeeList extends Component {
             );
     }
 
+    editClickHandler(id) {
+        this.setState({ editClick: { isClicked: true, id } });
+    }
+
+    deleteClickHandler(id) {
+        axios.delete(`http://localhost:8888/employees/${id}`)
+            .then(res => this.getEmployees())
+            .catch(err => console.log(err));
+    }
+
     render() {
-        const { error, isLoaded, items } = this.state;
+        const { error, isLoaded, items, editClick } = this.state;
         const cols = [
             { field: 'id', name: 'Id' },
             { field: 'fullname', name: 'Full Name' },
             { field: 'contactPreference', name: 'Contact Preference' },
             { field: 'email', name: 'Email' },
             { field: 'phone', name: 'Phone', align: 'right' },
+            { field: 'actions', name: 'Actions', align: 'center', actions: {edit: true, delete: true} },
         ];
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
+        } else if (editClick.isClicked) {
+            return <Redirect to={`edit/${editClick.id}`} />;
         } else {
             return (
-                // <div className="container mt-5">
-                //     <Table striped bordered hover size="sm">
-                //         <thead>
-                //             <tr><th colSpan="6"><h3 className="text-center">Employee Details</h3></th></tr>
-                //             <tr>
-                //                 <th>Id</th>
-                //                 <th>Name</th>
-                //                 <th>Contact Preference</th>
-                //                 <th>Email</th>
-                //                 <th>Phone</th>
-                //                 {/* <th>Skills</th> */}
-                //             </tr>
-                //         </thead>
-                //         <tbody>
-                //             {items.map(item => (
-                //                 <tr key={item.id}>
-                //                     <td>{item.id}</td>
-                //                     <td>{item.fullname}</td>
-                //                     <td>{item.contactPreference}</td>
-                //                     <td>{item.email}</td>
-                //                     <td>{item.phone}</td>
-                //                 </tr>
-                //             ))}
-                //         </tbody>
-                //     </Table>
-                // </div>
-                <div className="mt-5 mb-5"><CustomMuiTable columns={cols} rows={items} displayHeader={true} scrollable={true} pagination={true}></CustomMuiTable></div>
+                <div className="mt-5 mb-5">
+                    <CustomMuiTable
+                        columns={cols}
+                        rows={items}
+                        displayHeader={true}
+                        scrollable={true}
+                        pagination={true}
+                        onEditClick={this.editClickHandler}
+                        onDeleteClick={this.deleteClickHandler}
+                    />
+                </div>
             );
         }
     }

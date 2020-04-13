@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
@@ -52,7 +53,10 @@ const useStyles = makeStyles({
         borderRight: '2px solid lightgrey',
         borderLeft: '2px solid lightgrey',
         fontSize: '0.75rem'
-    }
+    },
+    actionBtnMargin: {
+        marginRight: 10,
+    },
 });
 
 CustomMuiTable.propTypes = {
@@ -62,13 +66,20 @@ CustomMuiTable.propTypes = {
         align: PropTypes.string,
         minWidth: PropTypes.string,
         maxWidth: PropTypes.string,
-        format: PropTypes.func
+        format: PropTypes.func,
+        actions: PropTypes.object
+        // PropTypes.objectOf(PropTypes.shape({
+        //     edit: PropTypes.bool,
+        //     delete: PropTypes.bool
+        // }))
     })),
     rows: PropTypes.array.isRequired,
     displayHeader: PropTypes.bool,
     scrollable: PropTypes.bool,
     hover: PropTypes.bool,
-    pagination: PropTypes.bool
+    pagination: PropTypes.bool,
+    onEditClick: PropTypes.func,
+    onDeleteClick: PropTypes.func
 };
 
 CustomMuiTable.defaultProps = {
@@ -76,7 +87,7 @@ CustomMuiTable.defaultProps = {
 };
 
 export default function CustomMuiTable(props) {
-    const { rows, displayHeader, columns, hover, scrollable, pagination } = props;
+    const { rows, displayHeader, columns, hover, scrollable, pagination, onEditClick, onDeleteClick } = props;
     const classes = useStyles();
     const numOfRecords = pagination ? 5 : rows.length;
     const [page, setPage] = React.useState(0);
@@ -114,12 +125,39 @@ export default function CustomMuiTable(props) {
                         return (
                             <TableRow className={classes.tableRow} hover={hover} role="checkbox" tabIndex={-1} key={i}>
                                 {columns.map(column => {
-                                    const value = row[column.field];
-                                    return (
-                                        <TableCell key={column.field} align={column.align}>
-                                            {column.format && typeof value === 'number' ? column.format(value) : value}
-                                        </TableCell>
-                                    );
+                                    let returnElement = '';
+                                    if (column.actions) {
+                                        if (column.actions.edit && column.actions.delete) {
+                                            returnElement = (
+                                                <TableCell key={column.field} align={column.align}>
+                                                    <Button variant="outlined" color="primary" size="small" className={classes.actionBtnMargin}
+                                                        onClick={() => onEditClick(row.id)}>Edit</Button>
+                                                    <Button variant="outlined" color="secondary" size="small"
+                                                        onClick={() => onDeleteClick(row.id)}>Delete</Button>
+                                                </TableCell>);
+                                        } else if (column.actions.edit) {
+                                            returnElement = (
+                                                <TableCell key={column.field} align={column.align}>
+                                                    <Button variant="outlined" color="primary" size="small"
+                                                        onClick={() => onEditClick(row.id)}>Edit</Button>
+                                                </TableCell>);
+                                        } else if (column.actions.delete) {
+                                            returnElement = (
+                                                <TableCell key={column.field} align={column.align}>
+                                                    <Button variant="outlined" color="secondary" size="small"
+                                                        onClick={() => onDeleteClick(row.id)}>Delete</Button>
+                                                </TableCell>);
+                                        }
+                                    }
+                                    else {
+                                        const value = row[column.field];
+                                        returnElement = (
+                                            <TableCell key={column.field} align={column.align}>
+                                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                                            </TableCell>
+                                        );
+                                    }
+                                    return returnElement;
                                 })}
                             </TableRow>
                         );

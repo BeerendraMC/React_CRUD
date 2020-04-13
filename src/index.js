@@ -38,6 +38,7 @@ const routing = (
             <Route exact path="/" component={App} />
             <Route path="/employees" component={EmployeeList} />
             <Route path="/create" component={CreateEmployee} />
+            <Route path="/edit/:id" component={CreateEmployee} />
         </div>
     </Router>
 )
