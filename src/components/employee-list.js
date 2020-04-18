@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import CustomMuiTable from './shared/MuiTable'
+import CustomMuiTable from '../shared/MuiTable'
 
 class EmployeeList extends Component {
     constructor(props) {
@@ -75,6 +75,7 @@ class EmployeeList extends Component {
                         displayHeader={true}
                         scrollable={true}
                         pagination={true}
+                        hasActionsAccess={JSON.parse(localStorage.getItem('userDetails')).role === 'admin'}
                         onEditClick={this.editClickHandler}
                         onDeleteClick={this.deleteClickHandler}
                     />

@@ -78,6 +78,7 @@ CustomMuiTable.propTypes = {
     scrollable: PropTypes.bool,
     hover: PropTypes.bool,
     pagination: PropTypes.bool,
+    hasActionsAccess: PropTypes.bool.isRequired,
     onEditClick: PropTypes.func,
     onDeleteClick: PropTypes.func
 };
@@ -87,11 +88,14 @@ CustomMuiTable.defaultProps = {
 };
 
 export default function CustomMuiTable(props) {
-    const { rows, displayHeader, columns, hover, scrollable, pagination, onEditClick, onDeleteClick } = props;
+    const { rows, displayHeader, columns, hover, scrollable, pagination, hasActionsAccess, onEditClick, onDeleteClick } = props;
     const classes = useStyles();
     const numOfRecords = pagination ? 5 : rows.length;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(numOfRecords);
+    if (!hasActionsAccess) {
+        columns.splice(columns.findIndex(x => x.name === 'Actions'));
+    }
 
     function handleChangePage(event, newPage) {
         setPage(newPage);

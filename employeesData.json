@@ -1,11 +1,25 @@
 {
-  "employees": [
+  "users": [
     {
       "id": 1,
+      "name": "Beerendra",
+      "password": "bmc@6",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "name": "Manju",
+      "password": "manju@8",
+      "role": "employee"
+    }
+  ],
+  "employees": [
+    {
       "fullname": "Ravi",
       "contactPreference": "phone",
       "email": "ravi@gmail.com",
       "phone": "9855566623",
+      "id": 1,
       "skills": [
         {
           "skillName": "C#",
