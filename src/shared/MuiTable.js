@@ -93,8 +93,8 @@ export default function CustomMuiTable(props) {
     const numOfRecords = pagination ? 5 : rows.length;
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(numOfRecords);
-    if (!hasActionsAccess) {
-        columns.splice(columns.findIndex(x => x.name === 'Actions'));
+    if (!hasActionsAccess && columns.findIndex(x => x.name === 'Actions') !== -1) {
+        columns.splice(columns.findIndex(x => x.name === 'Actions'),1);
     }
 
     function handleChangePage(event, newPage) {

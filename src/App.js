@@ -40,7 +40,7 @@ class App extends Component {
                 </li>
                 <li className="nav-item">
                   <div className="nav-link">
-                    <AuthText />
+                    <AuthLink />
                   </div>
                 </li>
               </ul>
@@ -73,7 +73,7 @@ class App extends Component {
 
 export default App;
 
-const AuthText = () => {
+const AuthLink = () => {
   let history = useHistory();
 
   if (localStorage.getItem('userDetails')) {
